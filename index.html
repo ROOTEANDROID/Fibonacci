@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Distancia entre dos puntos · Plano Fibonacci</title>
+<title>Distancia entre dos puntos ยท Plano Fibonacci</title>
 <style>
 :root{--bg:#f6f4ef;--card:#fff;--tx:#1f2430;--mut:#6b7280;--ln:#d9d6cc;--acc:#1e3a8a;--A:#d9480f;--B:#0b7285;
 box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
@@ -20,7 +20,7 @@ p.sub{color:var(--mut);margin:0 0 14px;font-size:.92rem}
 svg{width:100%;height:auto;display:block;touch-action:manipulation;cursor:crosshair}
 .row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
 label{font-size:.8rem;color:var(--mut);display:block;margin-bottom:2px}
-input{width:100%;padding:9px;border:1px solid var(--ln);border-radius:8px;background:var(--bg);color:var(--tx);font-size:1rem}
+input,select{width:100%;padding:9px;border:1px solid var(--ln);border-radius:8px;background:var(--bg);color:var(--tx);font-size:1rem}
 h3{margin:6px 0;font-size:.95rem}
 .pa{color:var(--A)}.pb{color:var(--B)}
 .res{background:var(--bg);border-radius:10px;padding:10px;font-size:.95rem;overflow-x:auto}
@@ -41,10 +41,13 @@ button:hover{border-color:var(--acc)}
     <div class="hint">Toca o haz clic en el plano para colocar el punto A y luego el B.</div>
   </div>
   <div class="card">
+    <h3>Ubicaciรณn del eje (origen)</h3>
+    <div class="row"><div><label>Posiciรณn rรกpida</label><select id="pre"><option value="0,0">Esquina inferior izquierda</option><option value="17,10">Centro del tablero</option><option value="10,10">Centro del cuadrado 21</option><option value="21,0">Base, uniรณn del 21 con el 5</option><option value="21,21">Esquina superior del 21 y el 13</option><option value="21,8">Uniรณn del 13 con el 8</option><option value="25,6">Centro de la espiral</option></select></div><div><label>O tรณcalo en el plano</label><button id="pick" style="width:100%">Tocar para colocar origen</button></div></div>
+    <div class="row"><div><label>Origen X</label><input id="ox" type="number" step="any" value="0"></div><div><label>Origen Y</label><input id="oy" type="number" step="any" value="0"></div></div>
     <h3 class="pa">Punto A</h3>
-    <div class="row"><div><label>x₁</label><input id="x1" type="number" step="any" value="3"></div><div><label>y₁</label><input id="y1" type="number" step="any" value="4"></div></div>
+    <div class="row"><div><label>xโ</label><input id="x1" type="number" step="any" value="3"></div><div><label>yโ</label><input id="y1" type="number" step="any" value="4"></div></div>
     <h3 class="pb">Punto B</h3>
-    <div class="row"><div><label>x₂</label><input id="x2" type="number" step="any" value="24"></div><div><label>y₂</label><input id="y2" type="number" step="any" value="16"></div></div>
+    <div class="row"><div><label>xโ</label><input id="x2" type="number" step="any" value="24"></div><div><label>yโ</label><input id="y2" type="number" step="any" value="16"></div></div>
     <div class="row"><div><label>Escala: cm por cuadrito (opcional)</label><input id="esc" type="number" step="any" min="0" placeholder="ej. 1"></div><div></div></div>
     <div class="res" id="res"></div>
     <div class="btns">
@@ -58,7 +61,7 @@ button:hover{border-color:var(--acc)}
 <script>
 (function(){
 var NS="http://www.w3.org/2000/svg",svg=document.getElementById("svg"),S=1;
-var sq=[[0,0,21,"#e58ca3","21×21"],[21,8,13,"#f2b98a","13×13"],[26,0,8,"#e6ecb0","8×8"],[21,0,5,"#a8d5a2","5×5"],[21,5,3,"#7fcfc4","3×3"],[24,6,2,"#a9a6e0","2×2"],[25,5,1,"#e8e0f5","1"],[24,5,1,"#c9a4d8","1"]];
+var sq=[[0,0,21,"#e58ca3","21ร—21"],[21,8,13,"#f2b98a","13ร—13"],[26,0,8,"#e6ecb0","8ร—8"],[21,0,5,"#a8d5a2","5ร—5"],[21,5,3,"#7fcfc4","3ร—3"],[24,6,2,"#a9a6e0","2ร—2"],[25,5,1,"#e8e0f5","1"],[24,5,1,"#c9a4d8","1"]];
 var arcs=[[0,0,21,21,21],[21,21,34,8,13],[34,8,26,0,8],[26,0,21,5,5],[21,5,24,8,3],[24,8,26,6,2],[26,6,25,5,1],[25,5,24,6,1]];
 function el(n,a,p){var e=document.createElementNS(NS,n);for(var k in a)e.setAttribute(k,a[k]);(p||svg).appendChild(e);return e}
 function Y(y){return -y}
@@ -71,20 +74,27 @@ sq.forEach(function(s){
   if(s[2]>=3){var t=el("text",{x:s[0]+s[2]/2,y:Y(s[1]+s[2]/2),"text-anchor":"middle","font-size":s[2]>=8?1.6:.9,fill:"#222"});t.textContent=s[4]}
 });
 arcs.forEach(function(a){el("path",{d:"M"+a[0]+" "+Y(a[1])+" A"+a[4]+" "+a[4]+" 0 0 1 "+a[2]+" "+Y(a[3]),fill:"none",stroke:"#1e3a8a","stroke-width":.22})});
-/* ejes */
-var ax="#111";
-el("line",{x1:-2.5,y1:0,x2:36,y2:0,stroke:ax,"stroke-width":.15});
-el("line",{x1:0,y1:2.5,x2:0,y2:-22.5,stroke:ax,"stroke-width":.15});
-for(var i=0;i<=34;i+=2){el("line",{x1:i,y1:-.25,x2:i,y2:.25,stroke:ax,"stroke-width":.1});if(i%4==0&&i){var t=el("text",{x:i,y:1.4,"text-anchor":"middle","font-size":.9,fill:"var(--tx)"});t.textContent=i}}
-for(var j=2;j<=21;j+=2){el("line",{x1:-.25,y1:-j,x2:.25,y2:-j,stroke:ax,"stroke-width":.1});if(j%4==2||j==21){var t2=el("text",{x:-.6,y:-j+.3,"text-anchor":"end","font-size":.9,fill:"var(--tx)"});t2.textContent=j}}
-var tx=el("text",{x:35.6,y:1.4,"font-size":1.1,fill:"var(--tx)"});tx.textContent="x";
-var ty=el("text",{x:.6,y:-22.2,"font-size":1.1,fill:"var(--tx)"});ty.textContent="y";
-var dyn=el("g",{});
+/* ejes (el origen se puede mover) */
+var ox=0,oy=0,mode="p";
+var axg=el("g",{}),dyn=el("g",{});
+function tk(x1,y1,x2,y2,w){el("line",{x1:x1,y1:y1,x2:x2,y2:y2,stroke:"#111","stroke-width":w},axg)}
+function lb(x,y,txt,anc,sz){var t=el("text",{x:x,y:y,"text-anchor":anc||"middle","font-size":sz||.9,fill:"#111",stroke:"#fff","stroke-width":.22,"paint-order":"stroke"},axg);t.textContent=txt}
+function drawAxes(){
+  while(axg.firstChild)axg.removeChild(axg.firstChild);
+  tk(-2.8,-oy,36.5,-oy,.15);tk(ox,-23.5,ox,3.5,.15);
+  var r,X,Yy;
+  for(r=Math.ceil(-2.5-ox);r<=Math.floor(36-ox);r++){if(r%2)continue;X=r+ox;tk(X,-oy-.25,X,-oy+.25,.1);if(r%4===0&&r!==0)lb(X,-oy+1.4,r)}
+  for(r=Math.ceil(-3-oy);r<=Math.floor(23-oy);r++){if(r%2)continue;Yy=-(r+oy);tk(ox-.25,Yy,ox+.25,Yy,.1);if(r%4===0&&r!==0)lb(ox-.5,Yy+.3,r,"end")}
+  lb(36.2,-oy-.6,"x","middle",1.2);lb(ox+.8,-23.2,"y","middle",1.2);
+  el("circle",{cx:ox,cy:-oy,r:.45,fill:"#111"},axg);lb(ox-.7,-oy+1.3,"O","end",1);
+}
+drawAxes();
 function $(i){return document.getElementById(i)}
 function f(n){return (Math.round(n*1000)/1000).toString().replace(".",",")}
 function draw(){
   var x1=parseFloat($("x1").value),y1=parseFloat($("y1").value),x2=parseFloat($("x2").value),y2=parseFloat($("y2").value);
   while(dyn.firstChild)dyn.removeChild(dyn.firstChild);
+  dyn.setAttribute("transform","translate("+ox+" "+(-oy)+")");
   if([x1,y1,x2,y2].some(isNaN)){$("res").textContent="Escribe las cuatro coordenadas.";return}
   var dx=x2-x1,dy=y2-y1,d=Math.sqrt(dx*dx+dy*dy);
   el("polyline",{points:x1+","+Y(y1)+" "+x2+","+Y(y1)+" "+x2+","+Y(y2),fill:"none",stroke:"#111","stroke-width":.12,"stroke-dasharray":".4 .3"},dyn);
@@ -93,12 +103,12 @@ function draw(){
     el("circle",{cx:p[0],cy:Y(p[1]),r:.55,fill:p[3],stroke:"#fff","stroke-width":.15},dyn);
     var t=el("text",{x:p[0]+.8,y:Y(p[1])-.7,"font-size":1.3,"font-weight":"bold",fill:"#111",stroke:"#fff","stroke-width":.25,"paint-order":"stroke"},dyn);t.textContent=p[2]+"("+f(p[0])+", "+f(p[1])+")";
   });
-  var esc=parseFloat($("esc").value),real=esc>0?"<div>Distancia real ≈ <b>"+f(d*esc)+" cm</b></div>":"";
-  $("res").innerHTML="<div>d = √[(x₂ − x₁)² + (y₂ − y₁)²]</div>"+
-   "<div>d = √[("+f(x2)+" − "+f(x1)+")² + ("+f(y2)+" − "+f(y1)+")²]</div>"+
-   "<div>d = √[("+f(dx)+")² + ("+f(dy)+")²] = √"+f(dx*dx+dy*dy)+"</div>"+
-   "<div class='big'>d ≈ "+f(d)+" u</div>"+real+
-   "<div class='hint'>Δx = "+f(dx)+" · Δy = "+f(dy)+"</div>";
+  var esc=parseFloat($("esc").value),real=esc>0?"<div>Distancia real โ <b>"+f(d*esc)+" cm</b></div>":"";
+  $("res").innerHTML="<div>d = โ[(xโ โ’ xโ)ยฒ + (yโ โ’ yโ)ยฒ]</div>"+
+   "<div>d = โ[("+f(x2)+" โ’ "+f(x1)+")ยฒ + ("+f(y2)+" โ’ "+f(y1)+")ยฒ]</div>"+
+   "<div>d = โ[("+f(dx)+")ยฒ + ("+f(dy)+")ยฒ] = โ"+f(dx*dx+dy*dy)+"</div>"+
+   "<div class='big'>d โ "+f(d)+" u</div>"+real+
+   "<div class='hint'>ฮ”x = "+f(dx)+" ยท ฮ”y = "+f(dy)+"</div>";
 }
 ["x1","y1","x2","y2","esc"].forEach(function(i){$(i).addEventListener("input",draw)});
 var next=0;
@@ -106,11 +116,28 @@ svg.addEventListener("click",function(e){
   var pt=svg.createSVGPoint();pt.x=e.clientX;pt.y=e.clientY;
   var p=pt.matrixTransform(svg.getScreenCTM().inverse());
   var x=Math.round(p.x*2)/2,y=Math.round(-p.y*2)/2;
+  if(mode=="o"){setOrigin(Math.round(x),Math.round(y));setMode("p");return}
+  x=Math.round((x-ox)*100)/100;y=Math.round((y-oy)*100)/100;
   if(next==0){$("x1").value=x;$("y1").value=y}else{$("x2").value=x;$("y2").value=y}
   next=1-next;draw();
 });
-$("fib").onclick=function(){$("x1").value=0;$("y1").value=0;$("x2").value=21;$("y2").value=21;draw()};
-$("rnd").onclick=function(){function r(m){return Math.round(Math.random()*m)}$("x1").value=r(34);$("y1").value=r(21);$("x2").value=r(34);$("y2").value=r(21);draw()};
+function setOrigin(nx,ny){
+  ["1","2"].forEach(function(n){
+    var a=$("x"+n),b=$("y"+n);
+    if(!isNaN(parseFloat(a.value)))a.value=Math.round((parseFloat(a.value)+ox-nx)*1000)/1000;
+    if(!isNaN(parseFloat(b.value)))b.value=Math.round((parseFloat(b.value)+oy-ny)*1000)/1000;
+  });
+  ox=nx;oy=ny;
+  if(parseFloat($("ox").value)!==ox)$("ox").value=ox;
+  if(parseFloat($("oy").value)!==oy)$("oy").value=oy;
+  drawAxes();draw();
+}
+function setMode(m){mode=m;$("pick").textContent=m=="o"?"Toca el planoโ€ฆ":"Tocar para colocar origen";$("pick").style.borderColor=m=="o"?"var(--acc)":""}
+$("pick").onclick=function(){setMode(mode=="o"?"p":"o")};
+$("pre").onchange=function(){var v=this.value.split(",");setOrigin(parseFloat(v[0]),parseFloat(v[1]))};
+["ox","oy"].forEach(function(i){$(i).addEventListener("input",function(){var a=parseFloat($("ox").value),b=parseFloat($("oy").value);if(!isNaN(a)&&!isNaN(b))setOrigin(a,b)})});
+$("fib").onclick=function(){$("x1").value=-ox;$("y1").value=-oy;$("x2").value=21-ox;$("y2").value=21-oy;draw()};
+$("rnd").onclick=function(){function r(m){return Math.round(Math.random()*m)}$("x1").value=r(34)-ox;$("y1").value=r(21)-oy;$("x2").value=r(34)-ox;$("y2").value=r(21)-oy;draw()};
 $("clr").onclick=function(){["x1","y1","x2","y2"].forEach(function(i){$(i).value=""});$("esc").value="";next=0;draw()};
 draw();
 })();
