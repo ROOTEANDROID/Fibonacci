@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Distancia entre dos puntos · Plano Fibonacci</title>
+<style>
+:root{--bg:#f6f4ef;--card:#fff;--tx:#1f2430;--mut:#6b7280;--ln:#d9d6cc;--acc:#1e3a8a;--A:#d9480f;--B:#0b7285;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#15171c;--card:#1f232b;--tx:#eceef2;--mut:#9aa3b2;--ln:#363b47;--acc:#8fa8ff;--A:#ff922b;--B:#3bc9db}}
+:root[data-theme="dark"]{--bg:#15171c;--card:#1f232b;--tx:#eceef2;--mut:#9aa3b2;--ln:#363b47;--acc:#8fa8ff;--A:#ff922b;--B:#3bc9db}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;line-height:1.4}
+main{max-width:980px;margin:0 auto;padding:16px}
+h1{font-size:1.4rem;margin:0 0 4px}
+p.sub{color:var(--mut);margin:0 0 14px;font-size:.92rem}
+.grid{display:grid;grid-template-columns:1fr;gap:14px}
+@media(min-width:860px){.grid{grid-template-columns:1.6fr 1fr}}
+.card{background:var(--card);border:1px solid var(--ln);border-radius:14px;padding:12px}
+svg{width:100%;height:auto;display:block;touch-action:manipulation;cursor:crosshair}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
+label{font-size:.8rem;color:var(--mut);display:block;margin-bottom:2px}
+input{width:100%;padding:9px;border:1px solid var(--ln);border-radius:8px;background:var(--bg);color:var(--tx);font-size:1rem}
+h3{margin:6px 0;font-size:.95rem}
+.pa{color:var(--A)}.pb{color:var(--B)}
+.res{background:var(--bg);border-radius:10px;padding:10px;font-size:.95rem;overflow-x:auto}
+.big{font-size:1.6rem;font-weight:700;color:var(--acc)}
+.btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+button{padding:9px 12px;border-radius:8px;border:1px solid var(--ln);background:var(--card);color:var(--tx);font-size:.9rem;cursor:pointer}
+button:hover{border-color:var(--acc)}
+.hint{font-size:.8rem;color:var(--mut);margin-top:6px}
+</style>
+</head>
+<body>
+<main>
+<h1>Distancia entre dos puntos</h1>
+<p class="sub">Plano cartesiano sobre el modelo de Fibonacci (21, 13, 8, 5, 3, 2, 1, 1). Cada cuadrito vale 1 unidad.</p>
+<div class="grid">
+  <div class="card">
+    <svg id="svg" viewBox="-3 -24 40 28" aria-label="Plano cartesiano"></svg>
+    <div class="hint">Toca o haz clic en el plano para colocar el punto A y luego el B.</div>
+  </div>
+  <div class="card">
+    <h3 class="pa">Punto A</h3>
+    <div class="row"><div><label>x₁</label><input id="x1" type="number" step="any" value="3"></div><div><label>y₁</label><input id="y1" type="number" step="any" value="4"></div></div>
+    <h3 class="pb">Punto B</h3>
+    <div class="row"><div><label>x₂</label><input id="x2" type="number" step="any" value="24"></div><div><label>y₂</label><input id="y2" type="number" step="any" value="16"></div></div>
+    <div class="row"><div><label>Escala: cm por cuadrito (opcional)</label><input id="esc" type="number" step="any" min="0" placeholder="ej. 1"></div><div></div></div>
+    <div class="res" id="res"></div>
+    <div class="btns">
+      <button id="fib">Puntos Fibonacci</button>
+      <button id="rnd">Aleatorio</button>
+      <button id="clr">Reiniciar</button>
+    </div>
+  </div>
+</div>
+</main>
+<script>
+(function(){
+var NS="http://www.w3.org/2000/svg",svg=document.getElementById("svg"),S=1;
+var sq=[[0,0,21,"#e58ca3","21×21"],[21,8,13,"#f2b98a","13×13"],[26,0,8,"#e6ecb0","8×8"],[21,0,5,"#a8d5a2","5×5"],[21,5,3,"#7fcfc4","3×3"],[24,6,2,"#a9a6e0","2×2"],[25,5,1,"#e8e0f5","1"],[24,5,1,"#c9a4d8","1"]];
+var arcs=[[0,0,21,21,21],[21,21,34,8,13],[34,8,26,0,8],[26,0,21,5,5],[21,5,24,8,3],[24,8,26,6,2],[26,6,25,5,1],[25,5,24,6,1]];
+function el(n,a,p){var e=document.createElementNS(NS,n);for(var k in a)e.setAttribute(k,a[k]);(p||svg).appendChild(e);return e}
+function Y(y){return -y}
+sq.forEach(function(s){
+  el("rect",{x:s[0],y:Y(s[1]+s[2]),width:s[2],height:s[2],fill:s[3],stroke:"#555","stroke-width":.1});
+  for(var i=1;i<s[2];i++){
+    el("line",{x1:s[0]+i,y1:Y(s[1]),x2:s[0]+i,y2:Y(s[1]+s[2]),stroke:"#00000030","stroke-width":.04});
+    el("line",{x1:s[0],y1:Y(s[1]+i),x2:s[0]+s[2],y2:Y(s[1]+i),stroke:"#00000030","stroke-width":.04});
+  }
+  if(s[2]>=3){var t=el("text",{x:s[0]+s[2]/2,y:Y(s[1]+s[2]/2),"text-anchor":"middle","font-size":s[2]>=8?1.6:.9,fill:"#222"});t.textContent=s[4]}
+});
+arcs.forEach(function(a){el("path",{d:"M"+a[0]+" "+Y(a[1])+" A"+a[4]+" "+a[4]+" 0 0 1 "+a[2]+" "+Y(a[3]),fill:"none",stroke:"#1e3a8a","stroke-width":.22})});
+/* ejes */
+var ax="#111";
+el("line",{x1:-2.5,y1:0,x2:36,y2:0,stroke:ax,"stroke-width":.15});
+el("line",{x1:0,y1:2.5,x2:0,y2:-22.5,stroke:ax,"stroke-width":.15});
+for(var i=0;i<=34;i+=2){el("line",{x1:i,y1:-.25,x2:i,y2:.25,stroke:ax,"stroke-width":.1});if(i%4==0&&i){var t=el("text",{x:i,y:1.4,"text-anchor":"middle","font-size":.9,fill:"var(--tx)"});t.textContent=i}}
+for(var j=2;j<=21;j+=2){el("line",{x1:-.25,y1:-j,x2:.25,y2:-j,stroke:ax,"stroke-width":.1});if(j%4==2||j==21){var t2=el("text",{x:-.6,y:-j+.3,"text-anchor":"end","font-size":.9,fill:"var(--tx)"});t2.textContent=j}}
+var tx=el("text",{x:35.6,y:1.4,"font-size":1.1,fill:"var(--tx)"});tx.textContent="x";
+var ty=el("text",{x:.6,y:-22.2,"font-size":1.1,fill:"var(--tx)"});ty.textContent="y";
+var dyn=el("g",{});
+function $(i){return document.getElementById(i)}
+function f(n){return (Math.round(n*1000)/1000).toString().replace(".",",")}
+function draw(){
+  var x1=parseFloat($("x1").value),y1=parseFloat($("y1").value),x2=parseFloat($("x2").value),y2=parseFloat($("y2").value);
+  while(dyn.firstChild)dyn.removeChild(dyn.firstChild);
+  if([x1,y1,x2,y2].some(isNaN)){$("res").textContent="Escribe las cuatro coordenadas.";return}
+  var dx=x2-x1,dy=y2-y1,d=Math.sqrt(dx*dx+dy*dy);
+  el("polyline",{points:x1+","+Y(y1)+" "+x2+","+Y(y1)+" "+x2+","+Y(y2),fill:"none",stroke:"#111","stroke-width":.12,"stroke-dasharray":".4 .3"},dyn);
+  el("line",{x1:x1,y1:Y(y1),x2:x2,y2:Y(y2),stroke:"#e03131","stroke-width":.25},dyn);
+  [[x1,y1,"A","#d9480f"],[x2,y2,"B","#0b7285"]].forEach(function(p){
+    el("circle",{cx:p[0],cy:Y(p[1]),r:.55,fill:p[3],stroke:"#fff","stroke-width":.15},dyn);
+    var t=el("text",{x:p[0]+.8,y:Y(p[1])-.7,"font-size":1.3,"font-weight":"bold",fill:"#111",stroke:"#fff","stroke-width":.25,"paint-order":"stroke"},dyn);t.textContent=p[2]+"("+f(p[0])+", "+f(p[1])+")";
+  });
+  var esc=parseFloat($("esc").value),real=esc>0?"<div>Distancia real ≈ <b>"+f(d*esc)+" cm</b></div>":"";
+  $("res").innerHTML="<div>d = √[(x₂ − x₁)² + (y₂ − y₁)²]</div>"+
+   "<div>d = √[("+f(x2)+" − "+f(x1)+")² + ("+f(y2)+" − "+f(y1)+")²]</div>"+
+   "<div>d = √[("+f(dx)+")² + ("+f(dy)+")²] = √"+f(dx*dx+dy*dy)+"</div>"+
+   "<div class='big'>d ≈ "+f(d)+" u</div>"+real+
+   "<div class='hint'>Δx = "+f(dx)+" · Δy = "+f(dy)+"</div>";
+}
+["x1","y1","x2","y2","esc"].forEach(function(i){$(i).addEventListener("input",draw)});
+var next=0;
+svg.addEventListener("click",function(e){
+  var pt=svg.createSVGPoint();pt.x=e.clientX;pt.y=e.clientY;
+  var p=pt.matrixTransform(svg.getScreenCTM().inverse());
+  var x=Math.round(p.x*2)/2,y=Math.round(-p.y*2)/2;
+  if(next==0){$("x1").value=x;$("y1").value=y}else{$("x2").value=x;$("y2").value=y}
+  next=1-next;draw();
+});
+$("fib").onclick=function(){$("x1").value=0;$("y1").value=0;$("x2").value=21;$("y2").value=21;draw()};
+$("rnd").onclick=function(){function r(m){return Math.round(Math.random()*m)}$("x1").value=r(34);$("y1").value=r(21);$("x2").value=r(34);$("y2").value=r(21);draw()};
+$("clr").onclick=function(){["x1","y1","x2","y2"].forEach(function(i){$(i).value=""});$("esc").value="";next=0;draw()};
+draw();
+})();
+</script>
+</body>
+</html>
