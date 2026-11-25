@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Distancia entre dos puntos ยท Plano Fibonacci</title>
+<title>Distancia entre dos puntos &#xB7; Plano Fibonacci</title>
 <style>
 :root{--bg:#f6f4ef;--card:#fff;--tx:#1f2430;--mut:#6b7280;--ln:#d9d6cc;--acc:#1e3a8a;--A:#d9480f;--B:#0b7285;
 box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
@@ -41,13 +41,13 @@ button:hover{border-color:var(--acc)}
     <div class="hint">Toca o haz clic en el plano para colocar el punto A y luego el B.</div>
   </div>
   <div class="card">
-    <h3>Ubicaciรณn del eje (origen)</h3>
-    <div class="row"><div><label>Posiciรณn rรกpida</label><select id="pre"><option value="0,0">Esquina inferior izquierda</option><option value="17,10">Centro del tablero</option><option value="10,10">Centro del cuadrado 21</option><option value="21,0">Base, uniรณn del 21 con el 5</option><option value="21,21">Esquina superior del 21 y el 13</option><option value="21,8">Uniรณn del 13 con el 8</option><option value="25,6">Centro de la espiral</option></select></div><div><label>O tรณcalo en el plano</label><button id="pick" style="width:100%">Tocar para colocar origen</button></div></div>
+    <h3>Ubicaci&#xF3;n del eje (origen)</h3>
+    <div class="row"><div><label>Posici&#xF3;n r&#xE1;pida</label><select id="pre"><option value="0,0">Esquina inferior izquierda</option><option value="17,10">Centro del tablero</option><option value="10,10">Centro del cuadrado 21</option><option value="21,0">Base, uni&#xF3;n del 21 con el 5</option><option value="21,21">Esquina superior del 21 y el 13</option><option value="21,8">Uni&#xF3;n del 13 con el 8</option><option value="25,6">Centro de la espiral</option></select></div><div><label>O t&#xF3;calo en el plano</label><button id="pick" style="width:100%">Tocar para colocar origen</button></div></div>
     <div class="row"><div><label>Origen X</label><input id="ox" type="number" step="any" value="0"></div><div><label>Origen Y</label><input id="oy" type="number" step="any" value="0"></div></div>
     <h3 class="pa">Punto A</h3>
-    <div class="row"><div><label>xโ</label><input id="x1" type="number" step="any" value="3"></div><div><label>yโ</label><input id="y1" type="number" step="any" value="4"></div></div>
+    <div class="row"><div><label>x&#x2081;</label><input id="x1" type="number" step="any" value="3"></div><div><label>y&#x2081;</label><input id="y1" type="number" step="any" value="4"></div></div>
     <h3 class="pb">Punto B</h3>
-    <div class="row"><div><label>xโ</label><input id="x2" type="number" step="any" value="24"></div><div><label>yโ</label><input id="y2" type="number" step="any" value="16"></div></div>
+    <div class="row"><div><label>x&#x2082;</label><input id="x2" type="number" step="any" value="24"></div><div><label>y&#x2082;</label><input id="y2" type="number" step="any" value="16"></div></div>
     <div class="row"><div><label>Escala: cm por cuadrito (opcional)</label><input id="esc" type="number" step="any" min="0" placeholder="ej. 1"></div><div></div></div>
     <div class="res" id="res"></div>
     <div class="btns">
@@ -61,7 +61,7 @@ button:hover{border-color:var(--acc)}
 <script>
 (function(){
 var NS="http://www.w3.org/2000/svg",svg=document.getElementById("svg"),S=1;
-var sq=[[0,0,21,"#e58ca3","21ร—21"],[21,8,13,"#f2b98a","13ร—13"],[26,0,8,"#e6ecb0","8ร—8"],[21,0,5,"#a8d5a2","5ร—5"],[21,5,3,"#7fcfc4","3ร—3"],[24,6,2,"#a9a6e0","2ร—2"],[25,5,1,"#e8e0f5","1"],[24,5,1,"#c9a4d8","1"]];
+var sq=[[0,0,21,"#e58ca3","21\u00D721"],[21,8,13,"#f2b98a","13\u00D713"],[26,0,8,"#e6ecb0","8\u00D78"],[21,0,5,"#a8d5a2","5\u00D75"],[21,5,3,"#7fcfc4","3\u00D73"],[24,6,2,"#a9a6e0","2\u00D72"],[25,5,1,"#e8e0f5","1"],[24,5,1,"#c9a4d8","1"]];
 var arcs=[[0,0,21,21,21],[21,21,34,8,13],[34,8,26,0,8],[26,0,21,5,5],[21,5,24,8,3],[24,8,26,6,2],[26,6,25,5,1],[25,5,24,6,1]];
 function el(n,a,p){var e=document.createElementNS(NS,n);for(var k in a)e.setAttribute(k,a[k]);(p||svg).appendChild(e);return e}
 function Y(y){return -y}
@@ -103,12 +103,12 @@ function draw(){
     el("circle",{cx:p[0],cy:Y(p[1]),r:.55,fill:p[3],stroke:"#fff","stroke-width":.15},dyn);
     var t=el("text",{x:p[0]+.8,y:Y(p[1])-.7,"font-size":1.3,"font-weight":"bold",fill:"#111",stroke:"#fff","stroke-width":.25,"paint-order":"stroke"},dyn);t.textContent=p[2]+"("+f(p[0])+", "+f(p[1])+")";
   });
-  var esc=parseFloat($("esc").value),real=esc>0?"<div>Distancia real โ <b>"+f(d*esc)+" cm</b></div>":"";
-  $("res").innerHTML="<div>d = โ[(xโ โ’ xโ)ยฒ + (yโ โ’ yโ)ยฒ]</div>"+
-   "<div>d = โ[("+f(x2)+" โ’ "+f(x1)+")ยฒ + ("+f(y2)+" โ’ "+f(y1)+")ยฒ]</div>"+
-   "<div>d = โ[("+f(dx)+")ยฒ + ("+f(dy)+")ยฒ] = โ"+f(dx*dx+dy*dy)+"</div>"+
-   "<div class='big'>d โ "+f(d)+" u</div>"+real+
-   "<div class='hint'>ฮ”x = "+f(dx)+" ยท ฮ”y = "+f(dy)+"</div>";
+  var esc=parseFloat($("esc").value),real=esc>0?"<div>Distancia real \u2248 <b>"+f(d*esc)+" cm</b></div>":"";
+  $("res").innerHTML="<div>d = \u221A[(x\u2082 \u2212 x\u2081)\u00B2 + (y\u2082 \u2212 y\u2081)\u00B2]</div>"+
+   "<div>d = \u221A[("+f(x2)+" \u2212 "+f(x1)+")\u00B2 + ("+f(y2)+" \u2212 "+f(y1)+")\u00B2]</div>"+
+   "<div>d = \u221A[("+f(dx)+")\u00B2 + ("+f(dy)+")\u00B2] = \u221A"+f(dx*dx+dy*dy)+"</div>"+
+   "<div class='big'>d \u2248 "+f(d)+" u</div>"+real+
+   "<div class='hint'>\u0394x = "+f(dx)+" \u00B7 \u0394y = "+f(dy)+"</div>";
 }
 ["x1","y1","x2","y2","esc"].forEach(function(i){$(i).addEventListener("input",draw)});
 var next=0;
@@ -132,7 +132,7 @@ function setOrigin(nx,ny){
   if(parseFloat($("oy").value)!==oy)$("oy").value=oy;
   drawAxes();draw();
 }
-function setMode(m){mode=m;$("pick").textContent=m=="o"?"Toca el planoโ€ฆ":"Tocar para colocar origen";$("pick").style.borderColor=m=="o"?"var(--acc)":""}
+function setMode(m){mode=m;$("pick").textContent=m=="o"?"Toca el plano\u2026":"Tocar para colocar origen";$("pick").style.borderColor=m=="o"?"var(--acc)":""}
 $("pick").onclick=function(){setMode(mode=="o"?"p":"o")};
 $("pre").onchange=function(){var v=this.value.split(",");setOrigin(parseFloat(v[0]),parseFloat(v[1]))};
 ["ox","oy"].forEach(function(i){$(i).addEventListener("input",function(){var a=parseFloat($("ox").value),b=parseFloat($("oy").value);if(!isNaN(a)&&!isNaN(b))setOrigin(a,b)})});
